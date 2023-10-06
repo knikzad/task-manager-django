@@ -14,7 +14,7 @@ def home(request):
       user = request.user
       tasks = Task.objects.filter(user=user).order_by('due_date')
       today = date.today()
-      return render(request, 'home.html', {
+      return render(request, 'tasks/home.html', {
           'tasks': tasks,
         'today': today
       })
@@ -51,7 +51,7 @@ def add_task(request):
                 return redirect('home')
         else:
             form = TaskForm()
-        return render(request, 'add_task.html', {'form': form})
+        return render(request, 'tasks/add_task.html', {'form': form})
     else:
         messages.success(request, "You must be logged in to add task!")
         return redirect('login')
@@ -66,7 +66,7 @@ def update_task(request, pk):
             messages.success(request,
                              "The task has been successfully updated!")
             return redirect('home')
-        return render(request, 'update_task.html', {'form': form})
+        return render(request, 'tasks/update_task.html', {'form': form})
     else:
         messages.success(request, "You must be logged in to upadte task!")
         return redirect('login')
@@ -84,7 +84,7 @@ def update_task_status(request, pk):
 def task_detail(request, pk):
     if request.user.is_authenticated:
         task = Task.objects.get(id=pk)
-        return render(request, 'task_detail.html', {'task': task})
+        return render(request, 'tasks/task_detail.html', {'task': task})
     else:
         messages.success(request, "You must be logged in to view that!")
         return redirect('login')
@@ -114,7 +114,7 @@ def register_user(request):
         return redirect('home')
   else:
     form = SignUpForm()
-  return render(request, 'register.html', {'form':form})
+  return render(request, 'tasks/register.html', {'form':form})
 
 
 def login_user(request):
@@ -131,7 +131,7 @@ def login_user(request):
                              "Incorrect username or password! Try again...")
             return redirect('login')
     else:
-        return render(request, 'login.html')
+        return render(request, 'tasks/login.html')
 
 
 def logout_user(request):
