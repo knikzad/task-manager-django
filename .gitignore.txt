@@ -1,0 +1,46 @@
+# Virtual environment files
+venv/
+.env/
+
+# Dependency management files
+requirements.txt
+Pipfile
+Pipfile.lock
+poetry.lock
+
+# Database files
+*.sqlite3
+*.db
+
+# Static files and media uploads
+static/
+media/
+
+# Compiled or build artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+
+# IDE or editor-specific files
+.vscode/
+.idea/
+.vs/
+.emacs.d/
+
+# Log files
+*.log
+
+# Configuration files
+local_settings.py
+
+# Other temporary or generated files and directories
+*.bak
+*.tmp
+*.swp
+*.swo
+
+# Secret or sensitive information
+*.env
+*.secret
