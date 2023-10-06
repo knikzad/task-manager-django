@@ -1,0 +1,30 @@
+ {% extends 'layout.html' %}
+{% block body %}
+<br/>
+<div class = "col-md-6 offset-md-3">
+  {% if user.is_authenticated %}
+    {% if task %}
+    <div class="card task-container" id="taskTabsContent">
+      <div class="card-body">
+        <h5 class="card-title {% if task.status == 'completed' %}completed-task{% endif %}  task-title">{{ task.title }}</h5>
+        <p class="{% if task.status == 'completed' %}completed-task{% endif %} task-description card-text">{{ task.description }}</p>
+        <p><strong>Due Date: </strong>{{ task.due_date }}</p>
+        <div class="alert alert-success alert-status">
+        <input type="checkbox" id="task-{{ task.id }}" {% if task.status == 'completed' %}checked{% endif %} class="task-checkbox" data-task-id="{{ task.id }}" title="{% if task.status == 'completed' %}Mark as Incomplete{% else %}Mark as Complete{% endif %}">
+        <span id="status-{{ task.id }}">
+            {% if task.status == 'completed' %}
+                Completed
+            {% else %}
+                In Progress
+            {% endif %}
+        </span>
+        </div>
+        <a href="{% url 'update-task' task.id %}" class="btn btn-primary">Update</a>
+        <a href="{% url 'delete-task' task.id %}" class="btn btn-danger">Delete</a>
+      </div>
+    </div><br />
+    <a class = "btn btn-secondary" href = "{% url 'home' %}">Back</a>
+    {% endif %}
+  {% endif %}
+</div>
+{% endblock %}

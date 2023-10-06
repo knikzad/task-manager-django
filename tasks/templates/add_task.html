@@ -1,0 +1,13 @@
+ {% extends 'layout.html' %}
+{% block body %}
+<br/>
+<div class = "col-md-6 offset-md-3">
+<h1>Add Task:</h1>
+<form method = "POST" action = "{% url 'add-task' %}">
+  {% csrf_token %}
+  {{ form.as_p }}
+  
+  <button type="submit" class="btn btn-secondary">Add Task</button>
+</form>
+</div>
+{% endblock %}

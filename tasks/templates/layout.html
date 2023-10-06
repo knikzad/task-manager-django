@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Task Manager</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+      .alert-status {
+        padding: 3px !important;
+        width:120px !important;
+      }
+      .task-checkbox{
+        margin-right:5px;
+      }
+    .task-checkbox:hover {
+        cursor: pointer;
+    }
+
+    .task-checkbox {
+        margin-right: 10px;
+        cursor: pointer;
+    }
+
+    .task-title {
+        flex-grow: 1;
+    }
+
+    .completed-task {
+        color: #999;
+        text-decoration: line-through;
+    }
+    .due_date_passed{
+      color: red;
+    }
+      
+    </style>
+  </head>
+  <body>
+    {% include 'navbar.html' %}
+    <div class = "container">
+      {% if messages %}
+        {% for message in messages %}
+          <br />
+          <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            {{message}}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div> 
+        {% endfor %}
+      {% endif %}
+      {% block body %}
+    
+        
+      {% endblock %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function() {
+
+    $('#taskTabsContent').on('change', '.task-checkbox', function() {
+        var taskId = $(this).data('task-id');
+        var completed = $(this).prop('checked');
+        var status = completed ? 'completed' : 'in_progress';
+        var $taskContainer = $(this).closest('.task-container');
+        var $taskTitle = $taskContainer.find('.task-title');
+        var $taskDescription = $taskContainer.find('.task-description');
+        $.ajax({
+            url: '/tasks/update_status/' + taskId + '/',
+            type: 'POST',
+            data: {
+                'status': status,
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            success: function(response) {
+                if (response.success) {
+                    // Update the task checkbox and status
+                    $('#task-' + taskId).prop('checked', completed);
+
+                    // Update the task status label
+                    var statusLabel = completed ? 'Completed' : 'In Progress';
+                    $('#status-' + taskId).text(statusLabel);
+
+                    // Update the checkbox title attribute
+                    var checkboxTitle = completed ? 'Mark as Incomplete' : 'Mark as Complete';
+                    $('#task-' + taskId).attr('title', checkboxTitle);
+                  
+                    // Apply or remove styles based on task status
+                    if (completed) {
+                        $taskTitle.addClass('completed-task');
+                        $taskDescription.addClass('completed-task');
+                    } else {
+                        $taskTitle.removeClass('completed-task');
+                        $taskDescription.removeClass('completed-task');
+                    }
+
+                    // Send another AJAX request on success to update the task list according to status changes
+                    $.ajax({
+                      url: '/tasks/ajax/',
+                      type: 'GET',
+                      success: function(response) {
+                        var tasks = response.tasks;
+                        // Sort tasks by due date
+                        tasks.sort(function(a, b) {
+                          return new Date(a.due_date) - new Date(b.due_date);
+                        });
+                        
+                        // Clear existing content of the containers
+                        $('#completed-tasks').empty();
+                        $('#in-progress-tasks').empty();
+                        
+                        // Update the completed tasks container
+                        for (var i = 0; i < tasks.length; i++) {
+                          var task = tasks[i];
+                          
+                          if (task.status=='completed') {
+                            // Create HTML elements for task properties
+                            var taskElement = $('<a href="/tasks/'+task.id+'/" class="list-group-item list-group-item-action task-container">'+
+                                                    '<div class="d-flex w-100 justify-content-between">'+
+                                                      '<h5 class="completed-task task-title"><strong>Title: </strong>'+task.title+'</h5>'+
+                                                      '<small>'+task.due_date+'</small>'+
+                                                     '</div>'+
+                                                    
+                                                    '<div class="alert alert-success alert-status">'+
+                                                      '<input type="checkbox" id="task-'+task.id+'" checked="" class="task-checkbox" data-task-id="'+task.id+'" title="Mark as Incomplete">'+
+                                                      '<span id="status-'+task.id+'">'+task.status+'</span>'+
+                                                    '</div>'+
+                                                  '</a>'
+                                                );
+                            
+                            $('#completed-tasks').append(taskElement);
+                          } else {
+                            var taskElement = $('<a href="/tasks/'+task.id+'/" class="list-group-item list-group-item-action task-container">'+
+                                                    '<div class="d-flex w-100 justify-content-between">'+
+                                                      '<h5 class="task-title"><strong>Title: </strong>'+task.title+'</h5>'+
+                                                      '<small>'+task.due_date+'</small>'+
+                                                     '</div>'+
+                                                    
+                                                    '<div class="alert alert-success alert-status">'+
+                                                      '<input type="checkbox" id="task-'+task.id+'" class="task-checkbox" data-task-id="'+task.id+'" title="Mark as complete">'+
+                                                      '<span id="status-'+task.id+'">'+task.status+'</span>'+
+                                                    '</div>'+
+                                                  '</a>'
+                                                );
+                            
+                            $('#in-progress-tasks').append(taskElement);
+                          }
+                        }
+                      },
+                      error: function(xhr, textStatus, errorThrown) {
+                        console.log('Error: ' + errorThrown);
+                      }
+                    });
+                  
+                }
+            },
+            error: function() {
+                alert('An error occurred while updating task status.');
+            }
+        });
+    });
+});
+</script>
+  </body>
+</html>

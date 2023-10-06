@@ -1,0 +1,67 @@
+ {% extends 'layout.html' %}
+{% block body %}
+<br/>
+<!-- task_list.html -->
+<div class="col-md-6 offset-md-3">
+  <ul class="nav nav-tabs" id="taskTabs" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" id="in-progress-tab" data-bs-toggle="tab" href="#in-progress" role="tab" aria-controls="in-progress" aria-selected="true">My Tasks</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-link " id="completed-tab" data-bs-toggle="tab" href="#completed" role="tab" aria-controls="completed" aria-selected="false">Completed </a>
+    </li>
+  </ul>
+
+  <div class="tab-content" id="taskTabsContent">
+    <div class="tab-pane fade " id="completed" role="tabpanel" aria-labelledby="completed-tab">
+      <!-- <h2>Completed</h2> -->
+      <br>
+      <div id="completed-tasks">
+        {% for task in tasks %}
+            {% if task.status == "completed" %}
+                  <a href="{% url 'task-detail' task.id %}" class="list-group-item list-group-item-action task-container">
+                    <div class="d-flex w-100 justify-content-between">
+                      <h5 class="completed-task task-title"><strong>Title: </strong>{{task.title}}</h5>
+                      <small>{{task.due_date}}</small>
+                    </div>
+                    
+                    <div class="alert alert-success alert-status">
+                      <input type="checkbox" id="task-{{ task.id }}" checked class="task-checkbox" data-task-id="{{ task.id }}" title="Mark as Incomplete">
+                      <span id="status-{{ task.id }}">
+                              {{task.status}}
+                      </span>
+                    </div>
+                  </a>
+            {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="tab-pane fade show active" id="in-progress" role="tabpanel" aria-labelledby="in-progress-tab">
+      <!-- <h2>My Tasks</h2> -->
+      <br>
+      <div id="in-progress-tasks">
+        {% for task in tasks %}
+            {% if task.status == 'in_progress' %}
+                  <a href="{% url 'task-detail' task.id %}" class="list-group-item list-group-item-action task-container">
+                    <div class="d-flex w-100 justify-content-between">
+                      <h5 class="task-title"><strong>Title: </strong>{{task.title}}</h5>
+                      <small>{{task.due_date}}</small>
+                    </div>
+                    
+                    <div class="alert alert-success alert-status">
+                      <input type="checkbox" id="task-{{ task.id }}" class="task-checkbox" data-task-id="{{ task.id }}" title="Mark as Complete">
+                      <span id="status-{{ task.id }}">
+                          {{task.status}}
+                      </span>
+                    </div>
+                  </a>
+            {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
