@@ -61,7 +61,7 @@ The project demonstrates Django fundamentals, form handling, user authentication
 ---
 
 ## 📂 Project Structure
-
+```
 task-manager-django/
 │
 ├── task_manager/ # Project settings, URLs, WSGI, ASGI
@@ -82,10 +82,19 @@ task-manager-django/
 │ └── layout.html # Layout + navbar + AJAX logic
 │
 └── requirements.txt
-
+```
 
 ---
 
+## Possible Future Improvements
+- Add task categories or tags
+- Search & filter functionality
+- Pagination for long task lists
+- Convert to Django REST Framework API
+- Dockerize the project
+- Switch to PostgreSQL
+- Add unit tests
+- 
 ## 🚀 How to Run Locally
 
 ```bash
@@ -108,11 +117,4 @@ python manage.py runserver
 Visit the app:
 http://127.0.0.1:8000/
 
-## Possible Future Improvements
-- Add task categories or tags
-- Search & filter functionality
-- Pagination for long task lists
-- Convert to Django REST Framework API
-- Dockerize the project
-- Switch to PostgreSQL
-- Add unit tests
+
