@@ -86,15 +86,7 @@ task-manager-django/
 
 ---
 
-## Possible Future Improvements
-- Add task categories or tags
-- Search & filter functionality
-- Pagination for long task lists
-- Convert to Django REST Framework API
-- Dockerize the project
-- Switch to PostgreSQL
-- Add unit tests
-- 
+
 ## 🚀 How to Run Locally
 
 ```bash
