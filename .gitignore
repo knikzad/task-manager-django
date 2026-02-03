@@ -3,7 +3,6 @@ venv/
 .env/
 
 # Dependency management files
-requirements.txt
 Pipfile
 Pipfile.lock
 poetry.lock
